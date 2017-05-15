@@ -1,0 +1,9 @@
+{
+  "files": [
+    "inline.ts"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "target": "es5"
+  }
+}

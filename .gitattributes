@@ -1,0 +1,5 @@
+.gitattributes      export-ignore
+.travis.yml         export-ignore
+.covelalls.yml      export-ignore
+/tests              export-ignore
+/client-side/src    export-ignore

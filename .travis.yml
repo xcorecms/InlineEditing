@@ -1,0 +1,44 @@
+language: php
+
+dist: trusty
+
+sudo: false
+
+services:
+    - postgresql
+
+addons:
+    postgresql: '9.6' # require 9.5+ (on conflict query)
+    mariadb: '10.0'
+
+cache:
+    directories:
+        - vendor
+        - $HOME/.composer/cache
+
+php:
+    - 7.1
+
+install:
+    - composer install --no-interaction --prefer-source
+
+before_script:
+    # Init Postgre database
+    - psql -c 'CREATE DATABASE inline;' -U postgres
+    - psql inline < tests/sql/postgres.sql
+
+    # Init Mysql database
+    - mysql -e "CREATE DATABASE inline;" -u root
+    - mysql -u root inline < tests/sql/mysql.sql
+    - mysql -e 'SET PASSWORD FOR "root"@"localhost" = PASSWORD("");'
+
+script:
+    - php vendor/bin/phpstan analyse ./src ./tests --level 6
+    - php vendor/bin/phpcs --standard=PSR2 ./src ./tests
+    - php vendor/bin/tester tests -p phpdbg --coverage ./coverage.xml --coverage-src ./src
+
+after_script:
+    # Report Code Coverage
+    - >
+      wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+      && php coveralls.phar --verbose --config .coveralls.yml
