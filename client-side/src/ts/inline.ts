@@ -8,7 +8,7 @@ class Inline {
 
     public editables: NodeListOf<Element>
 
-    public changes: {[id: string]: Item} = {}
+    public changes: {[id: string]: BaseItem} = {}
 
     public btns: {[id: string]: HTMLButtonElement} = {}
 
@@ -112,14 +112,12 @@ class Inline {
 
         document.body.appendChild(container)
 
-        this.initTinymce()
+        this.preInitTinymce()
     }
 
-    public initTinymce() {
+    public preInitTinymce() {
 
-        let self = this
-
-        this.editables = document.querySelectorAll('*[data-inline-name]')
+        this.editables = document.querySelectorAll('*[data-inline-type]')
 
         this.editablesForeach((el) => {
             el.classList.add('inline-editing')
@@ -127,27 +125,6 @@ class Inline {
         })
 
         this.backup()
-
-        for (let optionsName in this.editableConfigs) {
-
-            let settings = (<any>Object).assign({
-                entity_encoding: 'raw',
-                inline: true,
-                menubar: false,
-                language: 'cs',
-                plugins: 'paste link image lists nonbreaking',
-                paste_as_text: true,
-                theme: 'modern',
-                setup: function (editor: Editor) {
-                    editor.on('init', () => self.disable());
-                    editor.on('keyup change redo undo', function () {
-                        self.updateContent(editor)
-                    })
-                }
-            }, this.editableConfigs[optionsName])
-
-            tinymce.init(settings)
-        }
     }
 
     public updateContent(editor: Editor) {
@@ -158,12 +135,23 @@ class Inline {
         if (this.changes.hasOwnProperty(key)) {
             this.changes[key].content = editor.getContent()
         } else {
-            this.changes[key] = new Item(
-                el.dataset['inlineNamespace'],
-                el.dataset['inlineLocale'],
-                el.dataset['inlineName'],
-                editor.getContent()
-            )
+            if (el.dataset['inlineType'] === 'simple') {
+                this.changes[key] = new SimpleItem(
+                    el.dataset['inlineNamespace'],
+                    el.dataset['inlineLocale'],
+                    el.dataset['inlineName'],
+                    editor.getContent()
+                )
+            } else if (el.dataset['inlineType'] === 'entity') {
+                this.changes[key] = new EntityItem(
+                    el.dataset['inlineEntity'],
+                    el.dataset['inlineId'],
+                    el.dataset['inlineProperty'],
+                    editor.getContent()
+                )
+            } else {
+                console.log('invalid type')
+            }
         }
 
         this.btns['status'].classList.add('inline-hidden')
@@ -216,10 +204,26 @@ class Inline {
         this.btns['save'].classList.remove('inline-hidden')
         this.btns['revert'].classList.remove('inline-hidden')
 
-        this.editablesForeach((el) => {
-            el.classList.remove('inline-disabled')
-            el.setAttribute('contenteditable', 'true')
-        })
+        this.editablesForeach((el) => el.classList.remove('inline-disabled'))
+
+        let self = this
+        for (let optionsName in this.editableConfigs) {
+
+            let settings = (<any>Object).assign({
+                entity_encoding: 'raw',
+                inline: true,
+                menubar: false,
+                language: 'cs',
+                plugins: 'paste link image lists nonbreaking',
+                paste_as_text: true,
+                theme: 'modern',
+                setup: function (editor: Editor) {
+                    editor.on('keyup change redo undo', () => self.updateContent(editor))
+                }
+            }, this.editableConfigs[optionsName])
+
+            tinymce.init(settings)
+        }
     }
 
     public disable() {
@@ -231,8 +235,9 @@ class Inline {
 
         this.editablesForeach((el) => {
             el.classList.add('inline-disabled')
-            el.setAttribute('contenteditable', 'false')
         })
+
+        tinymce.remove()
     }
 
     public backup() {
@@ -246,8 +251,19 @@ class Inline {
     }
 }
 
-class Item {
+interface BaseItem {
+    content: string
+}
+
+class SimpleItem implements BaseItem {
+    public type = 'simple'
     public constructor(public namespace: string, public locale: string, public name: string, public content: string) {
+    }
+}
+
+class EntityItem implements BaseItem {
+    public type = 'entity'
+    public constructor(public entity: string, public id: string, public property: string, public content: string) {
     }
 }
 

@@ -35,6 +35,7 @@ declare namespace TinyMCE {
 
     export interface Static extends Observable {
         init: (settings: any) => void;
+        remove: (selector?: string) => void;
         execCommand: (c: string, u: boolean, v: string) => boolean;
         activeEditor: Editor;
         get: (id: string) => Editor;

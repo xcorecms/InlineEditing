@@ -91,34 +91,15 @@ var Inline = (function () {
         btnRevert.addEventListener('click', function () { return self.revertAll(); });
         container.appendChild(btnRevert);
         document.body.appendChild(container);
-        this.initTinymce();
+        this.preInitTinymce();
     };
-    Inline.prototype.initTinymce = function () {
-        var self = this;
-        this.editables = document.querySelectorAll('*[data-inline-name]');
+    Inline.prototype.preInitTinymce = function () {
+        this.editables = document.querySelectorAll('*[data-inline-type]');
         this.editablesForeach(function (el) {
             el.classList.add('inline-editing');
             el.classList.add('inline-disabled');
         });
         this.backup();
-        for (var optionsName in this.editableConfigs) {
-            var settings = Object.assign({
-                entity_encoding: 'raw',
-                inline: true,
-                menubar: false,
-                language: 'cs',
-                plugins: 'paste link image lists nonbreaking',
-                paste_as_text: true,
-                theme: 'modern',
-                setup: function (editor) {
-                    editor.on('init', function () { return self.disable(); });
-                    editor.on('keyup change redo undo', function () {
-                        self.updateContent(editor);
-                    });
-                }
-            }, this.editableConfigs[optionsName]);
-            tinymce.init(settings);
-        }
     };
     Inline.prototype.updateContent = function (editor) {
         var el = editor.bodyElement;
@@ -127,7 +108,15 @@ var Inline = (function () {
             this.changes[key].content = editor.getContent();
         }
         else {
-            this.changes[key] = new Item(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], editor.getContent());
+            if (el.dataset['inlineType'] === 'simple') {
+                this.changes[key] = new SimpleItem(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], editor.getContent());
+            }
+            else if (el.dataset['inlineType'] === 'entity') {
+                this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], editor.getContent());
+            }
+            else {
+                console.log('invalid type');
+            }
         }
         this.btns['status'].classList.add('inline-hidden');
         this.btns['save'].classList.remove('inactive');
@@ -170,10 +159,23 @@ var Inline = (function () {
         this.btns['disable'].classList.remove('inline-hidden');
         this.btns['save'].classList.remove('inline-hidden');
         this.btns['revert'].classList.remove('inline-hidden');
-        this.editablesForeach(function (el) {
-            el.classList.remove('inline-disabled');
-            el.setAttribute('contenteditable', 'true');
-        });
+        this.editablesForeach(function (el) { return el.classList.remove('inline-disabled'); });
+        var self = this;
+        for (var optionsName in this.editableConfigs) {
+            var settings = Object.assign({
+                entity_encoding: 'raw',
+                inline: true,
+                menubar: false,
+                language: 'cs',
+                plugins: 'paste link image lists nonbreaking',
+                paste_as_text: true,
+                theme: 'modern',
+                setup: function (editor) {
+                    editor.on('keyup change redo undo', function () { return self.updateContent(editor); });
+                }
+            }, this.editableConfigs[optionsName]);
+            tinymce.init(settings);
+        }
     };
     Inline.prototype.disable = function () {
         this.btns['disable'].classList.add('inline-hidden');
@@ -183,8 +185,8 @@ var Inline = (function () {
         this.btns['enable'].classList.remove('inline-hidden');
         this.editablesForeach(function (el) {
             el.classList.add('inline-disabled');
-            el.setAttribute('contenteditable', 'false');
         });
+        tinymce.remove();
     };
     Inline.prototype.backup = function () {
         this.editablesForeach(function (el) { return el.setAttribute('data-inline-backup', el.innerHTML); });
@@ -196,14 +198,25 @@ var Inline = (function () {
     };
     return Inline;
 }());
-var Item = (function () {
-    function Item(namespace, locale, name, content) {
+var SimpleItem = (function () {
+    function SimpleItem(namespace, locale, name, content) {
         this.namespace = namespace;
         this.locale = locale;
         this.name = name;
         this.content = content;
+        this.type = 'simple';
     }
-    return Item;
+    return SimpleItem;
+}());
+var EntityItem = (function () {
+    function EntityItem(entity, id, property, content) {
+        this.entity = entity;
+        this.id = id;
+        this.property = property;
+        this.content = content;
+        this.type = 'entity';
+    }
+    return EntityItem;
 }());
 document.addEventListener('DOMContentLoaded', function () {
     var inline = new Inline();

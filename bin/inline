@@ -66,7 +66,7 @@ if ($username === null) {
 }
 
 if (strpos($dns, 'mysql') === 0) {
-    $sql = "CREATE TABLE `$tableName` (
+    $sql = "CREATE TABLE IF NOT EXISTS `$tableName` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `namespace` varchar(255) NOT NULL,
             `locale` varchar(2) NOT NULL,
@@ -78,7 +78,7 @@ if (strpos($dns, 'mysql') === 0) {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 } elseif (strpos($dns, 'pgsql') === 0 || strpos($dns, 'postgre') === 0) {
-    $sql = "CREATE TABLE $tableName (
+    $sql = "CREATE TABLE IF NOT EXISTS $tableName (
             id integer NOT NULL,
                 namespace character varying NOT NULL,
                 locale character(2) NOT NULL,
