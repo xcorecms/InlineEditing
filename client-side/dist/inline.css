@@ -1,4 +1,4 @@
-*[data-editable-name] {
+*[data-inline-type] {
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
@@ -15,9 +15,17 @@
 .inline-editing a {
   cursor: text;
 }
-.inline-editing.inline-disabled {
-  padding: 0;
-  border: none;
+.inline-editing.inline-content-success {
+  background-color: rgba(0, 182, 109, 0.1);
+  border-color: #00b66d;
+}
+.inline-editing.inline-content-error {
+  background-color: rgba(216, 32, 43, 0.1);
+  border-color: #d8202b;
+}
+.inline-error-msg {
+  font-weight: bold;
+  color: #d8202b;
 }
 .inline-container {
   position: fixed;

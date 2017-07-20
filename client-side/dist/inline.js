@@ -1,20 +1,20 @@
-/// <reference path="../../dist/tinymce/tinymce.d.ts" />
 var Inline = (function () {
     function Inline() {
+        var _this = this;
         this.changes = {};
         this.btns = {};
         this.editableConfigs = {
             'headings': {
-                selector: 'h1.inline-editing, h2.inline-editing, h3.inline-editing, h4.inline-editing, h5.inline-editing, h6.inline-editing',
+                selector: 'h1.inline-editing-tinymce, h2.inline-editing-tinymce, h3.inline-editing-tinymce, h4.inline-editing-tinymce, h5.inline-editing-tinymce, h6.inline-editing-tinymce',
                 toolbar: 'italic strikethrough | nonbreaking | undo redo',
             },
             'inlines': {
-                selector: 'span.inline-editing, strong.inline-editing, a.inline-editing',
+                selector: 'span.inline-editing-tinymce, strong.inline-editing-tinymce, a.inline-editing-tinymce',
                 forced_root_block: '',
                 toolbar: 'bold italic strikethrough | nonbreaking | link | undo redo'
             },
             'blocks': {
-                selector: 'div.inline-editing',
+                selector: 'div.inline-editing-tinymce',
                 toolbar: 'bold italic strikethrough | nonbreaking | fontsizeselect | styleselect bullist numlist link image | undo redo',
                 style_formats: [
                     {
@@ -30,7 +30,8 @@ var Inline = (function () {
                     },
                     { title: 'Horní index', icon: 'superscript', format: 'superscript' },
                     { title: 'Dolní index', icon: 'subscript', format: 'subscript' },
-                    { title: 'Zarovnání', icon: 'alignleft', items: [
+                    {
+                        title: 'Zarovnání', icon: 'alignleft', items: [
                             { title: 'Doleva', icon: 'alignleft', format: 'alignleft' },
                             { title: 'Na střed', icon: 'aligncenter', format: 'aligncenter' },
                             { title: 'Doprava', icon: 'alignright', format: 'alignright' },
@@ -39,6 +40,20 @@ var Inline = (function () {
                     }
                 ]
             }
+        };
+        this.lastSpecificUniqueId = 0;
+        this.updateSpecificContent = function (evt) {
+            var el = evt.target;
+            var key = el.id;
+            if (_this.changes.hasOwnProperty(key)) {
+                _this.changes[key].content = el.textContent;
+            }
+            else {
+                _this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], el.textContent);
+            }
+            _this.btns['status'].classList.add('inline-hidden');
+            _this.btns['save'].classList.remove('inactive');
+            _this.btns['revert'].classList.remove('inactive');
         };
         var source = document.getElementById('inline-editing-source');
         if (!source) {
@@ -53,10 +68,7 @@ var Inline = (function () {
         if (typeof tinymce === 'undefined') {
             var tinymceLink = document.createElement('script');
             tinymceLink.src = source.getAttribute('data-source-tinymce-js');
-            var self_1 = this;
-            tinymceLink.onload = function () {
-                self_1.initUI();
-            };
+            tinymceLink.onload = function () { return _this.initUI(); };
             document.head.insertBefore(tinymceLink, document.head.firstChild);
         }
         else {
@@ -64,18 +76,18 @@ var Inline = (function () {
         }
     }
     Inline.prototype.initUI = function () {
-        var self = this;
+        var _this = this;
         var container = document.createElement('div');
         container.classList.add('inline-container');
         var btnEnable = this.btns['enable'] = document.createElement('button');
         btnEnable.innerHTML = '<i class="inline-icon-xcore"></i>';
         btnEnable.className = 'inline-editing-btn inline-enable';
-        btnEnable.addEventListener('click', function () { return self.enable(); });
+        btnEnable.addEventListener('click', function () { return _this.enable(); });
         container.appendChild(btnEnable);
         var btnDisable = this.btns['disable'] = document.createElement('button');
         btnDisable.innerHTML = '<i class="inline-icon-xcore"></i>';
         btnDisable.className = 'inline-editing-btn inline-disable inline-hidden';
-        btnDisable.addEventListener('click', function () { return self.disable(); });
+        btnDisable.addEventListener('click', function () { return _this.disable(); });
         container.appendChild(btnDisable);
         var btnStatus = this.btns['status'] = document.createElement('button');
         btnStatus.className = 'inline-editing-btn inline-status inline-hidden';
@@ -83,12 +95,12 @@ var Inline = (function () {
         var btnSave = this.btns['save'] = document.createElement('button');
         btnSave.innerHTML = '<i class="inline-icon-save"></i>';
         btnSave.className = 'inline-editing-btn inline-save inline-hidden inactive';
-        btnSave.addEventListener('click', function () { return self.saveAll(); });
+        btnSave.addEventListener('click', function () { return _this.saveAll(); });
         container.appendChild(btnSave);
         var btnRevert = this.btns['revert'] = document.createElement('button');
         btnRevert.innerHTML = '<i class="inline-icon-trash"></i>';
         btnRevert.className = 'inline-editing-btn inline-revert inline-hidden inactive';
-        btnRevert.addEventListener('click', function () { return self.revertAll(); });
+        btnRevert.addEventListener('click', function () { return _this.revertAll(); });
         container.appendChild(btnRevert);
         document.body.appendChild(container);
         this.preInitTinymce();
@@ -96,12 +108,12 @@ var Inline = (function () {
     Inline.prototype.preInitTinymce = function () {
         this.editables = document.querySelectorAll('*[data-inline-type]');
         this.editablesForeach(function (el) {
-            el.classList.add('inline-editing');
-            el.classList.add('inline-disabled');
+            var type = el.getAttribute('data-inline-type');
+            el.classList.add((type === 'simple' || type === 'entity') ? 'inline-editing-tinymce' : 'inline-editing-specific');
         });
         this.backup();
     };
-    Inline.prototype.updateContent = function (editor) {
+    Inline.prototype.updateTinymceContent = function (editor) {
         var el = editor.bodyElement;
         var key = el.id;
         if (this.changes.hasOwnProperty(key)) {
@@ -123,6 +135,7 @@ var Inline = (function () {
         this.btns['revert'].classList.remove('inactive');
     };
     Inline.prototype.saveAll = function () {
+        var _this = this;
         var saveBtn = this.btns['save'];
         if (saveBtn.classList.contains('inactive')) {
             return;
@@ -130,37 +143,71 @@ var Inline = (function () {
         var statusBtn = this.btns['status'];
         statusBtn.classList.remove('inline-hidden');
         statusBtn.innerHTML = '<i class="inline-icon-progress"></i>';
-        var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open('POST', this.gatewayUrl);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
+            _this.clearErrors();
             if (xhr.status === 200) {
                 statusBtn.innerHTML = '<i class="inline-icon-ok"></i>';
+                _this.changes = {};
+                _this.backup();
+                _this.btns['revert'].classList.add('inactive');
             }
             else {
                 statusBtn.innerHTML = '<i class="inline-icon-error"></i>';
             }
+            var statusData = [];
+            try {
+                statusData = JSON.parse(xhr.responseText);
+            }
+            catch (e) {
+                alert('Server error');
+            }
+            var _loop_1 = function (editableId) {
+                var el = document.getElementById(editableId);
+                if (statusData[editableId].status === 0) {
+                    delete _this.changes[editableId];
+                    el.classList.add('inline-content-success');
+                    setTimeout(function () { return el.classList.remove('inline-content-success'); }, 500);
+                }
+                else {
+                    el.classList.add('inline-content-error');
+                    var errMsg = document.createElement('span');
+                    errMsg.classList.add('inline-error-msg');
+                    errMsg.innerHTML = statusData[editableId].message;
+                    el.parentNode.insertBefore(errMsg, el.nextSibling);
+                }
+            };
+            for (var editableId in statusData) {
+                _loop_1(editableId);
+            }
             saveBtn.classList.add('inactive');
-            self.btns['revert'].classList.add('inactive');
-            self.changes = {};
-            self.backup();
         };
         xhr.send(JSON.stringify(this.changes));
     };
+    Inline.prototype.clearErrors = function () {
+        this.editablesForeach(function (el) { return el.classList.remove('inline-content-error'); });
+        var msgElems = document.querySelectorAll('.inline-error-msg');
+        for (var i = 0; i < msgElems.length; i++) {
+            msgElems[i].remove();
+        }
+    };
     Inline.prototype.revertAll = function () {
+        this.clearErrors();
         this.editablesForeach(function (el) { return el.innerHTML = el.getAttribute('data-inline-backup'); });
         this.btns['save'].classList.add('inactive');
+        this.btns['status'].classList.add('inline-hidden');
         this.btns['revert'].classList.add('inactive');
         this.changes = {};
     };
     Inline.prototype.enable = function () {
+        var _this = this;
         this.btns['enable'].classList.add('inline-hidden');
         this.btns['disable'].classList.remove('inline-hidden');
         this.btns['save'].classList.remove('inline-hidden');
         this.btns['revert'].classList.remove('inline-hidden');
-        this.editablesForeach(function (el) { return el.classList.remove('inline-disabled'); });
-        var self = this;
+        this.editablesForeach(function (el) { return el.classList.add('inline-editing'); });
         for (var optionsName in this.editableConfigs) {
             var settings = Object.assign({
                 entity_encoding: 'raw',
@@ -170,12 +217,11 @@ var Inline = (function () {
                 plugins: 'paste link image lists nonbreaking',
                 paste_as_text: true,
                 theme: 'modern',
-                setup: function (editor) {
-                    editor.on('keyup change redo undo', function () { return self.updateContent(editor); });
-                }
+                setup: function (editor) { return editor.on('keyup change redo undo', function () { return _this.updateTinymceContent(editor); }); }
             }, this.editableConfigs[optionsName]);
             tinymce.init(settings);
         }
+        this.applySpecificEditable();
     };
     Inline.prototype.disable = function () {
         this.btns['disable'].classList.add('inline-hidden');
@@ -183,10 +229,9 @@ var Inline = (function () {
         this.btns['save'].classList.add('inline-hidden');
         this.btns['revert'].classList.add('inline-hidden');
         this.btns['enable'].classList.remove('inline-hidden');
-        this.editablesForeach(function (el) {
-            el.classList.add('inline-disabled');
-        });
+        this.editablesForeach(function (el) { return el.classList.remove('inline-editing'); });
         tinymce.remove();
+        this.removeSpecificEditable();
     };
     Inline.prototype.backup = function () {
         this.editablesForeach(function (el) { return el.setAttribute('data-inline-backup', el.innerHTML); });
@@ -195,6 +240,38 @@ var Inline = (function () {
         for (var i = 0; i < this.editables.length; i++) {
             callback(this.editables[i]);
         }
+    };
+    Inline.prototype.applySpecificEditable = function () {
+        var _this = this;
+        this.editablesForeach(function (el) {
+            if (el.classList.contains('inline-editing-specific')) {
+                if (!el.id) {
+                    el.id = 'mcex_' + _this.lastSpecificUniqueId++;
+                }
+                el.addEventListener('keypress', function (evt) {
+                    if (evt.which === 13) {
+                        evt.preventDefault();
+                    }
+                });
+                el.addEventListener('keyup', _this.updateSpecificContent);
+                el.addEventListener('change', _this.updateSpecificContent);
+                el.addEventListener('redo', _this.updateSpecificContent);
+                el.addEventListener('undo', _this.updateSpecificContent);
+                el.setAttribute('contenteditable', 'true');
+            }
+        });
+    };
+    Inline.prototype.removeSpecificEditable = function () {
+        var _this = this;
+        this.editablesForeach(function (el) {
+            if (el.classList.contains('inline-editing-specific')) {
+                el.removeEventListener('keyup', _this.updateSpecificContent);
+                el.removeEventListener('change', _this.updateSpecificContent);
+                el.removeEventListener('redo', _this.updateSpecificContent);
+                el.removeEventListener('undo', _this.updateSpecificContent);
+                el.removeAttribute('contenteditable');
+            }
+        });
     };
     return Inline;
 }());
@@ -218,6 +295,4 @@ var EntityItem = (function () {
     }
     return EntityItem;
 }());
-document.addEventListener('DOMContentLoaded', function () {
-    var inline = new Inline();
-});
+document.addEventListener('DOMContentLoaded', function () { return new Inline; });
