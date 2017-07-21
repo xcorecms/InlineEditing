@@ -221,17 +221,19 @@ class Inline {
 
             for (let editableId in statusData) {
                 let el = document.getElementById(editableId)
-                if (statusData[editableId].status === 0) {
+                if (el && statusData[editableId].status === 0) {
                     // remove from changes
                     delete this.changes[editableId]
                     el.classList.add('inline-content-success')
                     setTimeout(() => el.classList.remove('inline-content-success'), 500)
-                } else {
+                } else if (el) {
                     el.classList.add('inline-content-error')
                     let errMsg = document.createElement('span')
                     errMsg.classList.add('inline-error-msg')
                     errMsg.innerHTML = statusData[editableId].message
                     el.parentNode.insertBefore(errMsg, el.nextSibling);
+                } else {
+                    alert(statusData[editableId].message);
                 }
             }
 

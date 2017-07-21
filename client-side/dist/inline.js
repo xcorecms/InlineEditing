@@ -166,17 +166,20 @@ var Inline = (function () {
             }
             var _loop_1 = function (editableId) {
                 var el = document.getElementById(editableId);
-                if (statusData[editableId].status === 0) {
+                if (el && statusData[editableId].status === 0) {
                     delete _this.changes[editableId];
                     el.classList.add('inline-content-success');
                     setTimeout(function () { return el.classList.remove('inline-content-success'); }, 500);
                 }
-                else {
+                else if (el) {
                     el.classList.add('inline-content-error');
                     var errMsg = document.createElement('span');
                     errMsg.classList.add('inline-error-msg');
                     errMsg.innerHTML = statusData[editableId].message;
                     el.parentNode.insertBefore(errMsg, el.nextSibling);
+                }
+                else {
+                    alert(statusData[editableId].message);
                 }
             };
             for (var editableId in statusData) {
