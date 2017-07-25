@@ -44,8 +44,9 @@ class EntityPersister
 
     /**
      * @param Element $element
+     * @param callable|null $onBeforeValidation
      */
-    public function update(Element $element)
+    public function update(Element $element, callable $onBeforeValidation = null)
     {
         $key = $element->getEntityHash();
         $container = $this->entityElementContainers[$key] ?? null;
@@ -60,6 +61,14 @@ class EntityPersister
         $container->addElement($element);
 
         $entity = $container->getEntity();
+
+        if (is_callable($onBeforeValidation)) {
+            $message = $onBeforeValidation($entity);
+            if ($message) {
+                $element->setError(3, $message);
+            }
+        }
+
         $property = $element->getProperty();
         $value = $element->getValue();
 
