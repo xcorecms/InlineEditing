@@ -41,7 +41,6 @@ var Inline = (function () {
                 ]
             }
         };
-        this.lastSpecificUniqueId = 0;
         this.updateSpecificContent = function (evt) {
             var el = evt.target;
             var key = el.id;
@@ -162,24 +161,34 @@ var Inline = (function () {
                 statusData = JSON.parse(xhr.responseText);
             }
             catch (e) {
-                alert('Server error');
+                alert('Server error (json)');
             }
             var _loop_1 = function (editableId) {
                 var el = document.getElementById(editableId);
-                if (el && statusData[editableId].status === 0) {
-                    delete _this.changes[editableId];
-                    el.classList.add('inline-content-success');
-                    setTimeout(function () { return el.classList.remove('inline-content-success'); }, 500);
+                if (el) {
+                    switch (statusData[editableId].status) {
+                        case 0:
+                            delete _this.changes[editableId];
+                            el.classList.add('inline-content-success');
+                            setTimeout(function () { return el.classList.remove('inline-content-success'); }, 500);
+                            break;
+                        case 1:
+                            el.classList.add('inline-content-warning');
+                            break;
+                        default:
+                            el.classList.add('inline-content-error');
+                            var errMsg = document.createElement('span');
+                            errMsg.classList.add('inline-error-msg');
+                            errMsg.innerHTML = statusData[editableId].message;
+                            el.parentNode.insertBefore(errMsg, el.nextSibling);
+                            break;
+                    }
                 }
-                else if (el) {
-                    el.classList.add('inline-content-error');
-                    var errMsg = document.createElement('span');
-                    errMsg.classList.add('inline-error-msg');
-                    errMsg.innerHTML = statusData[editableId].message;
-                    el.parentNode.insertBefore(errMsg, el.nextSibling);
+                else if (statusData[editableId].message) {
+                    alert(statusData[editableId].message);
                 }
                 else {
-                    alert(statusData[editableId].message);
+                    alert('Server error (unknown)');
                 }
             };
             for (var editableId in statusData) {
@@ -190,7 +199,7 @@ var Inline = (function () {
         xhr.send(JSON.stringify(this.changes));
     };
     Inline.prototype.clearErrors = function () {
-        this.editablesForeach(function (el) { return el.classList.remove('inline-content-error'); });
+        this.editablesForeach(function (el) { return el.classList.remove('inline-content-error', 'inline-content-warning'); });
         var msgElems = document.querySelectorAll('.inline-error-msg');
         for (var i = 0; i < msgElems.length; i++) {
             msgElems[i].remove();
@@ -248,9 +257,6 @@ var Inline = (function () {
         var _this = this;
         this.editablesForeach(function (el) {
             if (el.classList.contains('inline-editing-specific')) {
-                if (!el.id) {
-                    el.id = 'mcex_' + _this.lastSpecificUniqueId++;
-                }
                 el.addEventListener('keypress', function (evt) {
                     if (evt.which === 13) {
                         evt.preventDefault();

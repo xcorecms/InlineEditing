@@ -33,7 +33,7 @@ before_script:
     - mysql -e 'SET PASSWORD FOR "root"@"localhost" = PASSWORD("");'
 
 script:
-    - php vendor/bin/phpstan analyse ./src ./tests --level 6
+    - php vendor/bin/phpstan analyse ./src ./tests --level 7
     - php vendor/bin/phpcs --standard=PSR2 ./src ./tests
     - php vendor/bin/tester tests -p phpdbg --coverage ./coverage.xml --coverage-src ./src
 

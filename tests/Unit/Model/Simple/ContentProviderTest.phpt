@@ -3,13 +3,13 @@ declare(strict_types = 1);
 
 namespace XcoreCMS\InlineEditing\Tests\Unit\Model;
 
-use XcoreCMS\InlineEditing\Model\ContentProvider;
+use XcoreCMS\InlineEditing\Model\Simple\ContentProvider;
 use XcoreCMS\InlineEditing\Tests\Mock\Cache;
 use XcoreCMS\InlineEditing\Tests\Mock\PersistenceLayer;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>

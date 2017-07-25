@@ -7,14 +7,14 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE file.
  */
 
-namespace XcoreCMS\InlineEditing\Model\PersistenceLayer;
+namespace XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer;
 
-use Dibi\Connection;
+use Doctrine\DBAL\Connection;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
  */
-class Dibi extends AbstractPersistenceLayer
+class Dbal extends AbstractPersistenceLayer
 {
     /**
      * @var Connection
@@ -22,6 +22,7 @@ class Dibi extends AbstractPersistenceLayer
     private $connection;
 
     /**
+     * Doctrine constructor.
      * @param string $tableName
      * @param Connection $connection
      */
@@ -38,7 +39,12 @@ class Dibi extends AbstractPersistenceLayer
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
-        return $this->connection->query($sql, $args[0], $args[1])->fetchPairs('name', 'content');
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(1, $args[0]);
+        $stmt->bindValue(2, $args[1]);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     /**
@@ -48,8 +54,12 @@ class Dibi extends AbstractPersistenceLayer
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
-        $this->connection->query($sql, $args[0], $args[1], $args[2], $args[3]);
-        return true;
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(1, $args[0]);
+        $stmt->bindValue(2, $args[1]);
+        $stmt->bindValue(3, $args[2]);
+        $stmt->bindValue(4, $args[3]);
+        return $stmt->execute();
     }
 
     /**
@@ -57,10 +67,6 @@ class Dibi extends AbstractPersistenceLayer
      */
     protected function getDriverName(): string
     {
-        $driverName = $this->connection->getConfig('driver', '');
-
-        return ($driverName === 'pdo') ?
-            $this->connection->getDriver()->getResource()->getAttribute(\PDO::ATTR_DRIVER_NAME) :
-            $driverName;
+        return $this->connection->getDriver()->getName();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace XcoreCMS\InlineEditing\Tests\Integration\PersistenceLayer;
 
 use Dibi\Connection;
-use XcoreCMS\InlineEditing\Model\PersistenceLayer\Dibi;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer\Dibi;
 use Tester\Environment;
 
 require __DIR__ . '/../../bootstrap.php';

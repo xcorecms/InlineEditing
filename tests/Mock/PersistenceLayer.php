@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace XcoreCMS\InlineEditing\Tests\Mock;
 
-use XcoreCMS\InlineEditing\Model\PersistenceLayerInterface;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayerInterface;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>

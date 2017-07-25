@@ -7,7 +7,7 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE file.
  */
 
-namespace XcoreCMS\InlineEditing\Model;
+namespace XcoreCMS\InlineEditing\Model\Simple;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>

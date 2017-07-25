@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace XcoreCMS\InlineEditing\Tests\Integration\PersistenceLayer;
 
-use XcoreCMS\InlineEditing\Model\PersistenceLayerInterface;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayerInterface;
 use Tester\Assert;
 use Tester\TestCase;
 

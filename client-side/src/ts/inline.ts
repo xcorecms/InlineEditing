@@ -55,9 +55,6 @@ class Inline {
         }
     }
 
-    // counter for specific entity elements
-    private lastSpecificUniqueId = 0
-
     /*
     // flatpickr main instance
     private flatpickr: any
@@ -216,24 +213,36 @@ class Inline {
             try {
                 statusData = JSON.parse(xhr.responseText)
             } catch (e) {
-                alert('Server error');
+                alert('Server error (json)');
             }
 
             for (let editableId in statusData) {
                 let el = document.getElementById(editableId)
-                if (el && statusData[editableId].status === 0) {
-                    // remove from changes
-                    delete this.changes[editableId]
-                    el.classList.add('inline-content-success')
-                    setTimeout(() => el.classList.remove('inline-content-success'), 500)
-                } else if (el) {
-                    el.classList.add('inline-content-error')
-                    let errMsg = document.createElement('span')
-                    errMsg.classList.add('inline-error-msg')
-                    errMsg.innerHTML = statusData[editableId].message
-                    el.parentNode.insertBefore(errMsg, el.nextSibling);
-                } else {
+
+                if (el) {
+                    switch (statusData[editableId].status) {
+                        case 0:
+                            // ok - remove from changes
+                            delete this.changes[editableId]
+                            el.classList.add('inline-content-success')
+                            setTimeout(() => el.classList.remove('inline-content-success'), 500)
+                            break;
+                        case 1:
+                            // warning
+                            el.classList.add('inline-content-warning')
+                            break;
+                        default:
+                            el.classList.add('inline-content-error')
+                            let errMsg = document.createElement('span')
+                            errMsg.classList.add('inline-error-msg')
+                            errMsg.innerHTML = statusData[editableId].message
+                            el.parentNode.insertBefore(errMsg, el.nextSibling);
+                            break;
+                    }
+                } else if (statusData[editableId].message) {
                     alert(statusData[editableId].message);
+                } else {
+                    alert('Server error (unknown)')
                 }
             }
 
@@ -246,7 +255,7 @@ class Inline {
     // clear error messages and red colors
     public clearErrors() {
         // clear error content styles
-        this.editablesForeach((el) => el.classList.remove('inline-content-error'))
+        this.editablesForeach((el) => el.classList.remove('inline-content-error', 'inline-content-warning'))
 
         // clear error messages
         let msgElems = document.querySelectorAll('.inline-error-msg')
@@ -322,12 +331,8 @@ class Inline {
 
     // register specific entity listeners and generate unique ids
     private applySpecificEditable() {
-        this.editablesForeach((el) => {
+        this.editablesForeach((el: HTMLBodyElement) => {
             if (el.classList.contains('inline-editing-specific')) {
-                if (!el.id) {
-                    el.id = 'mcex_' + this.lastSpecificUniqueId++;
-                }
-
                 el.addEventListener('keypress', (evt: KeyboardEvent) => {
                     if (evt.which === 13) {
                         evt.preventDefault()

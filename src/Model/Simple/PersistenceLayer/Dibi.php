@@ -7,14 +7,14 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE file.
  */
 
-namespace XcoreCMS\InlineEditing\Model\PersistenceLayer;
+namespace XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer;
 
-use Nette\Database\Connection;
+use Dibi\Connection;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
  */
-class NetteDatabase extends AbstractPersistenceLayer
+class Dibi extends AbstractPersistenceLayer
 {
     /**
      * @var Connection
@@ -48,7 +48,8 @@ class NetteDatabase extends AbstractPersistenceLayer
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
-        return (bool) $this->connection->query($sql, $args[0], $args[1], $args[2], $args[3]);
+        $this->connection->query($sql, $args[0], $args[1], $args[2], $args[3]);
+        return true;
     }
 
     /**
@@ -56,6 +57,10 @@ class NetteDatabase extends AbstractPersistenceLayer
      */
     protected function getDriverName(): string
     {
-        return $this->connection->getDsn();
+        $driverName = $this->connection->getConfig('driver', '');
+
+        return ($driverName === 'pdo') ?
+            $this->connection->getDriver()->getResource()->getAttribute(\PDO::ATTR_DRIVER_NAME) :
+            $driverName;
     }
 }

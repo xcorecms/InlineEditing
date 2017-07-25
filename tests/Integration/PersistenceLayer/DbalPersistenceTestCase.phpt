@@ -5,7 +5,7 @@ namespace XcoreCMS\InlineEditing\Tests\Integration\PersistenceLayer;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
-use XcoreCMS\InlineEditing\Model\PersistenceLayer\Dbal;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer\Dbal;
 use Tester\Environment;
 
 require __DIR__ . '/../../bootstrap.php';

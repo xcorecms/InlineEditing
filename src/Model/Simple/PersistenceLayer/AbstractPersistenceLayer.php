@@ -7,10 +7,10 @@ declare(strict_types = 1);
  * For the full copyright and license information, please view the LICENSE file.
  */
 
-namespace XcoreCMS\InlineEditing\Model\PersistenceLayer;
+namespace XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer;
 
 use LogicException;
-use XcoreCMS\InlineEditing\Model\PersistenceLayerInterface;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayerInterface;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>

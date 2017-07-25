@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace XcoreCMS\InlineEditing\Tests\Integration\PersistenceLayer;
 
 use Nette\Database\Connection;
-use XcoreCMS\InlineEditing\Model\PersistenceLayer\NetteDatabase;
+use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer\NetteDatabase;
 use Tester\Environment;
 
 require __DIR__ . '/../../bootstrap.php';
