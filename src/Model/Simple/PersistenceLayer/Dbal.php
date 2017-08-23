@@ -40,8 +40,8 @@ class Dbal extends AbstractPersistenceLayer
     protected function getKeyPairResult(string $sql, array $args): array
     {
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(1, $args[0]);
-        $stmt->bindValue(2, $args[1]);
+        $stmt->bindValue('1', $args[0]);
+        $stmt->bindValue('2', $args[1]);
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
@@ -55,10 +55,10 @@ class Dbal extends AbstractPersistenceLayer
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue(1, $args[0]);
-        $stmt->bindValue(2, $args[1]);
-        $stmt->bindValue(3, $args[2]);
-        $stmt->bindValue(4, $args[3]);
+        $stmt->bindValue('1', $args[0]);
+        $stmt->bindValue('2', $args[1]);
+        $stmt->bindValue('3', $args[2]);
+        $stmt->bindValue('4', $args[3]);
         return $stmt->execute();
     }
 
