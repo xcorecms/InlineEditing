@@ -6,12 +6,10 @@
 }
 
 .inline-editing {
-  border: 1px dotted #6393b5;
-  padding: 0 12px;
+  outline: 1px dotted #6393b5;
 
   &:focus {
-    border: 1px solid #d3dbe4;
-    outline: none;
+    outline: 1px solid #d3dbe4;
   }
 
   a {
@@ -20,17 +18,24 @@
 
   &.inline-content-success {
     background-color: rgba(0, 182, 109, 0.1);
-    border-color: #00b66d;
+    outline-color: #00b66d;
   }
 
   &.inline-content-warning {
     background-color: rgba(182, 160, 12, 0.1);
-    border-color: #b6b357;
+    outline-color: #b6b357;
   }
 
   &.inline-content-error {
     background-color: rgba(216, 32, 43, 0.1);
-    border-color: #d8202b;
+    outline-color: #d8202b;
+  }
+}
+
+// override tinymce 1.3
+.inline-editing-tinymce {
+  &.mce-content-body {
+    line-height: inherit;
   }
 }
 
