@@ -304,4 +304,4 @@ var EntityItem = (function () {
     }
     return EntityItem;
 }());
-document.addEventListener('DOMContentLoaded', function () { return new Inline; });
+document.addEventListener('DOMContentLoaded', function () { return window.xcoreInline = new Inline; });

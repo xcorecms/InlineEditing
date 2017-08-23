@@ -419,4 +419,4 @@ class EntityItem implements BaseItem {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => new Inline)
+document.addEventListener('DOMContentLoaded', () => (<any>window).xcoreInline = new Inline)
