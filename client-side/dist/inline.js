@@ -115,15 +115,16 @@ var Inline = (function () {
     Inline.prototype.updateTinymceContent = function (editor) {
         var el = editor.bodyElement;
         var key = el.id;
+        var content = editor.getContent();
         if (this.changes.hasOwnProperty(key)) {
-            this.changes[key].content = editor.getContent();
+            this.changes[key].content = content;
         }
         else {
             if (el.dataset['inlineType'] === 'simple') {
-                this.changes[key] = new SimpleItem(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], editor.getContent());
+                this.changes[key] = new SimpleItem(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], content);
             }
             else if (el.dataset['inlineType'] === 'entity') {
-                this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], editor.getContent());
+                this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], content);
             }
             else {
                 console.log('invalid type');
@@ -219,10 +220,16 @@ var Inline = (function () {
         this.btns['disable'].classList.remove('inline-hidden');
         this.btns['save'].classList.remove('inline-hidden');
         this.btns['revert'].classList.remove('inline-hidden');
-        this.editablesForeach(function (el) { return el.classList.add('inline-editing'); });
+        this.editablesForeach(function (el) {
+            el.classList.add('inline-editing');
+            if (el.innerText.trim() === '') {
+                console.log('apply');
+                el.classList.add('inline-empty');
+            }
+        });
         for (var optionsName in this.editableConfigs) {
             var settings = Object.assign({
-                entity_encoding: 'raw',
+                entities: '160,nbsp',
                 inline: true,
                 menubar: false,
                 language: 'cs',

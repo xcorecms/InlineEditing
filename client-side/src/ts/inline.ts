@@ -40,16 +40,18 @@ class Inline {
                         {title: 'Nadpis 3', format: 'h3'},
                         {title: 'Nadpis 4', format: 'h4'},
                         {title: 'Nadpis 5', format: 'h5'},
-                        {title: 'Nadpis 6', format: 'h6'}]
+                        {title: 'Nadpis 6', format: 'h6'}
+                    ]
                 },
                 {title: 'Horní index', icon: 'superscript', format: 'superscript'},
                 {title: 'Dolní index', icon: 'subscript', format: 'subscript'},
                 {
                     title: 'Zarovnání', icon: 'alignleft', items: [
-                    {title: 'Doleva', icon: 'alignleft', format: 'alignleft'},
-                    {title: 'Na střed', icon: 'aligncenter', format: 'aligncenter'},
-                    {title: 'Doprava', icon: 'alignright', format: 'alignright'},
-                    {title: 'Do bloku', icon: 'alignjustify', format: 'alignjustify'}]
+                        {title: 'Doleva', icon: 'alignleft', format: 'alignleft'},
+                        {title: 'Na střed', icon: 'aligncenter', format: 'aligncenter'},
+                        {title: 'Doprava', icon: 'alignright', format: 'alignright'},
+                        {title: 'Do bloku', icon: 'alignjustify', format: 'alignjustify'}
+                    ]
                 }
             ]
         }
@@ -153,23 +155,24 @@ class Inline {
 
         let el = editor.bodyElement
         let key = el.id
+        let content = editor.getContent();
 
         if (this.changes.hasOwnProperty(key)) {
-            this.changes[key].content = editor.getContent()
+            this.changes[key].content = content
         } else {
             if (el.dataset['inlineType'] === 'simple') {
                 this.changes[key] = new SimpleItem(
                     el.dataset['inlineNamespace'],
                     el.dataset['inlineLocale'],
                     el.dataset['inlineName'],
-                    editor.getContent()
+                    content
                 )
             } else if (el.dataset['inlineType'] === 'entity') {
                 this.changes[key] = new EntityItem(
                     el.dataset['inlineEntity'],
                     el.dataset['inlineId'],
                     el.dataset['inlineProperty'],
-                    editor.getContent()
+                    content
                 )
             } else {
                 console.log('invalid type')
@@ -282,12 +285,19 @@ class Inline {
         this.btns['save'].classList.remove('inline-hidden')
         this.btns['revert'].classList.remove('inline-hidden')
 
-        this.editablesForeach((el) => el.classList.add('inline-editing'))
+        this.editablesForeach((el: HTMLElement) => {
+            el.classList.add('inline-editing')
+            if (el.innerText.trim() === '') {
+                console.log('apply')
+                // fix empty inline
+                el.classList.add('inline-empty')
+            }
+        })
 
         for (let optionsName in this.editableConfigs) {
 
             let settings = (<any>Object).assign({
-                entity_encoding: 'raw',
+                entities : '160,nbsp',
                 inline: true,
                 menubar: false,
                 language: 'cs',
