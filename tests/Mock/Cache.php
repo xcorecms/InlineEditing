@@ -12,7 +12,7 @@ use Psr\Cache\CacheItemPoolInterface;
 class Cache implements CacheItemPoolInterface
 {
     /**
-     * @var CacheItemInterface[]|Cache[]
+     * @var CacheItemInterface[]|CacheItem[]
      */
     public $data = [];
 

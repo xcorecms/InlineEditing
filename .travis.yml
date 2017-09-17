@@ -13,14 +13,13 @@ addons:
 
 cache:
     directories:
-        - vendor
         - $HOME/.composer/cache
 
 php:
     - 7.1
 
 install:
-    - composer install --no-interaction --prefer-source
+    - composer install --no-interaction --prefer-dist
 
 before_script:
     # Init Postgre database
@@ -33,7 +32,7 @@ before_script:
     - mysql -e 'SET PASSWORD FOR "root"@"localhost" = PASSWORD("");'
 
 script:
-    - php vendor/bin/phpstan analyse ./src ./tests --level 7
+    - php vendor/bin/phpstan analyse ./src ./tests --level 7 -c phpstan.neon
     - php vendor/bin/phpcs --standard=PSR2 ./src ./tests
     - php vendor/bin/tester tests -p phpdbg --coverage ./coverage.xml --coverage-src ./src
 
