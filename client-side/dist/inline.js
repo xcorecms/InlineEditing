@@ -62,7 +62,7 @@ var Inline = (function () {
         cssLink.href = source.getAttribute('data-source-css');
         cssLink.setAttribute('rel', 'stylesheet');
         cssLink.setAttribute('type', 'text/css');
-        document.head.appendChild(cssLink);
+        document.head.insertBefore(cssLink, document.head.firstChild);
         this.gatewayUrl = source.getAttribute('data-source-gateway-url');
         if (typeof tinymce === 'undefined') {
             var tinymceLink = document.createElement('script');
