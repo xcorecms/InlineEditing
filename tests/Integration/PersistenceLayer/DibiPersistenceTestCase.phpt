@@ -25,6 +25,7 @@ class DibiPersistenceTestCase extends BasePersistenceTestCase
 
         if ($params['driver'] === 'pdo_mysql') {
             $params['driver'] = 'mysqli';
+            $params['port'] = 3306; // must be int
         } elseif ($params['driver'] === 'pdo_pgsql') {
             $params['driver'] = 'postgre';
             $params['string'] = 'host=' . $params['host'] . ' port=' . $params['port'] . ' dbname=' . $params['dbname'];
