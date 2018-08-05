@@ -1,10 +1,8 @@
 /// <reference path="../../dist/tinymce/tinymce.d.ts" />
 
 import Editor = TinyMCE.Editor
+import {BaseItem, EntityItem, SimpleItem} from './items'
 
-//declare function flatpickr(element: string | Element | HTMLElement, options?: any): any;
-
-// TODO refactoring - split to more classes and files
 class Inline {
 
     // url of server enpoint
@@ -57,11 +55,6 @@ class Inline {
         }
     }
 
-    /*
-    // flatpickr main instance
-    private flatpickr: any
-    */
-
     public constructor() {
         let source = document.getElementById('inline-editing-source')
 
@@ -82,18 +75,6 @@ class Inline {
             tinymceLink.src = source.getAttribute('data-source-tinymce-js')
             tinymceLink.onload = () => this.initUI()
             document.head.insertBefore(tinymceLink, document.head.firstChild)
-
-            /*
-            prepared for datetime picker
-            let flatpickrLinkJs = document.createElement('script')
-            flatpickrLinkJs.src = 'https://unpkg.com/flatpickr'
-            document.head.appendChild(flatpickrLinkJs)
-
-            let flatpickrLinkCss = document.createElement('link')
-            flatpickrLinkCss.href = 'https://unpkg.com/flatpickr/dist/flatpickr.min.css'
-            flatpickrLinkCss.rel = 'stylesheet'
-            document.head.appendChild(flatpickrLinkCss)
-            */
         } else {
             this.initUI()
         }
@@ -357,17 +338,6 @@ class Inline {
                 el.setAttribute('contenteditable', 'true')
             }
         })
-
-        /*
-        // create flatpicker
-        this.flatpickr = flatpickr('.test', {
-            onChange: (selectedDates: any, dateStr: any, instance: any) => {
-                let el = <HTMLBodyElement>instance.input
-                el.innerHTML = dateStr
-                console.log(instance.input)
-            }
-        })
-        */
     }
 
     // unregister specific entity listeners
@@ -381,11 +351,6 @@ class Inline {
                 el.removeAttribute('contenteditable')
             }
         })
-
-        /*
-        // destroy flatpicker
-        this.flatpickr.destroy()
-        */
     }
 
     // update changes list - specific items
@@ -408,24 +373,6 @@ class Inline {
         this.btns['status'].classList.add('inline-hidden')
         this.btns['save'].classList.remove('inactive')
         this.btns['revert'].classList.remove('inactive')
-    }
-}
-
-interface BaseItem {
-    content: string
-}
-
-class SimpleItem implements BaseItem {
-    public type = 'simple'
-
-    public constructor(public namespace: string, public locale: string, public name: string, public content: string) {
-    }
-}
-
-class EntityItem implements BaseItem {
-    public type = 'entity'
-
-    public constructor(public entity: string, public id: string, public property: string, public content: string) {
     }
 }
 

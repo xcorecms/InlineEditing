@@ -1,3 +1,7 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var items_1 = require("./items");
 var Inline = (function () {
     function Inline() {
         var _this = this;
@@ -48,7 +52,7 @@ var Inline = (function () {
                 _this.changes[key].content = el.textContent;
             }
             else {
-                _this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], el.textContent);
+                _this.changes[key] = new items_1.EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], el.textContent);
             }
             _this.btns['status'].classList.add('inline-hidden');
             _this.btns['save'].classList.remove('inactive');
@@ -121,10 +125,10 @@ var Inline = (function () {
         }
         else {
             if (el.dataset['inlineType'] === 'simple') {
-                this.changes[key] = new SimpleItem(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], content);
+                this.changes[key] = new items_1.SimpleItem(el.dataset['inlineNamespace'], el.dataset['inlineLocale'], el.dataset['inlineName'], content);
             }
             else if (el.dataset['inlineType'] === 'entity') {
-                this.changes[key] = new EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], content);
+                this.changes[key] = new items_1.EntityItem(el.dataset['inlineEntity'], el.dataset['inlineId'], el.dataset['inlineProperty'], content);
             }
             else {
                 console.log('invalid type');
@@ -291,16 +295,11 @@ var Inline = (function () {
     };
     return Inline;
 }());
-var SimpleItem = (function () {
-    function SimpleItem(namespace, locale, name, content) {
-        this.namespace = namespace;
-        this.locale = locale;
-        this.name = name;
-        this.content = content;
-        this.type = 'simple';
-    }
-    return SimpleItem;
-}());
+document.addEventListener('DOMContentLoaded', function () { return window.xcoreInline = new Inline; });
+
+},{"./items":2}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var EntityItem = (function () {
     function EntityItem(entity, id, property, content) {
         this.entity = entity;
@@ -311,4 +310,17 @@ var EntityItem = (function () {
     }
     return EntityItem;
 }());
-document.addEventListener('DOMContentLoaded', function () { return window.xcoreInline = new Inline; });
+exports.EntityItem = EntityItem;
+var SimpleItem = (function () {
+    function SimpleItem(namespace, locale, name, content) {
+        this.namespace = namespace;
+        this.locale = locale;
+        this.name = name;
+        this.content = content;
+        this.type = 'simple';
+    }
+    return SimpleItem;
+}());
+exports.SimpleItem = SimpleItem;
+
+},{}]},{},[1]);

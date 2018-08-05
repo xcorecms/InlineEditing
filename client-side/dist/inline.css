@@ -2,46 +2,40 @@
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
-  transition: all 0.3s ease;
-}
+  transition: all 0.3s ease; }
+
 .inline-editing {
-  outline: 1px dotted #6393b5;
-}
-.inline-editing:focus {
-  outline: 1px solid #d3dbe4;
-}
-.inline-editing a {
-  cursor: text;
-}
-.inline-editing.inline-empty {
-  padding-left: 5px;
-  min-height: 10px;
-}
-.inline-editing.inline-content-success {
-  background-color: rgba(0, 182, 109, 0.1);
-  outline-color: #00b66d;
-}
-.inline-editing.inline-content-warning {
-  background-color: rgba(182, 160, 12, 0.1);
-  outline-color: #b6b357;
-}
-.inline-editing.inline-content-error {
-  background-color: rgba(216, 32, 43, 0.1);
-  outline-color: #d8202b;
-}
+  outline: 1px dotted #6393b5; }
+  .inline-editing:focus {
+    outline: 1px solid #d3dbe4; }
+  .inline-editing a {
+    cursor: text; }
+  .inline-editing.inline-empty {
+    padding-left: 5px;
+    min-height: 10px; }
+  .inline-editing.inline-content-success {
+    background-color: rgba(0, 182, 109, 0.1);
+    outline-color: #00b66d; }
+  .inline-editing.inline-content-warning {
+    background-color: rgba(182, 160, 12, 0.1);
+    outline-color: #b6b357; }
+  .inline-editing.inline-content-error {
+    background-color: rgba(216, 32, 43, 0.1);
+    outline-color: #d8202b; }
+
 .inline-editing-tinymce.mce-content-body {
-  line-height: inherit;
-}
+  line-height: inherit; }
+
 .inline-error-msg {
   font-weight: bold;
-  color: #d8202b;
-}
+  color: #d8202b; }
+
 .inline-container {
   position: fixed;
   top: 40%;
   left: 0;
-  z-index: 100000;
-}
+  z-index: 100000; }
+
 .inline-editing-btn {
   position: absolute;
   display: inline-block;
@@ -55,51 +49,39 @@
   cursor: pointer;
   background-color: #1c2830;
   color: #cad4dd;
-  transition: background-color 0.5s ease;
-}
-.inline-editing-btn.inline-hidden {
-  display: none;
-}
-.inline-editing-btn.inline-enable,
-.inline-editing-btn.inline-disable {
-  background-color: #0571b3;
-  font-size: 20px;
-}
-.inline-editing-btn.inline-enable {
-  color: #1c2830;
-}
-.inline-editing-btn.inline-status {
-  top: 50px;
-  z-index: 100001;
-}
-.inline-editing-btn.inline-status:hover {
-  cursor: auto;
-}
-.inline-editing-btn.inline-save {
-  top: 50px;
-}
-.inline-editing-btn.inline-save:hover {
-  background-color: #152028;
-}
-.inline-editing-btn.inline-revert {
-  top: 100px;
-}
-.inline-editing-btn.inline-revert:hover {
-  background-color: #152028;
-}
-.inline-editing-btn.inactive {
-  color: #455662;
-}
-.inline-editing-btn.inactive:hover {
-  cursor: auto;
-}
+  transition: background-color 0.5s ease; }
+  .inline-editing-btn.inline-hidden {
+    display: none; }
+  .inline-editing-btn.inline-enable, .inline-editing-btn.inline-disable {
+    background-color: #0571b3;
+    font-size: 20px; }
+  .inline-editing-btn.inline-enable {
+    color: #1c2830; }
+  .inline-editing-btn.inline-status {
+    top: 50px;
+    z-index: 100001; }
+    .inline-editing-btn.inline-status:hover {
+      cursor: auto; }
+  .inline-editing-btn.inline-save {
+    top: 50px; }
+    .inline-editing-btn.inline-save:hover {
+      background-color: #152028; }
+  .inline-editing-btn.inline-revert {
+    top: 100px; }
+    .inline-editing-btn.inline-revert:hover {
+      background-color: #152028; }
+  .inline-editing-btn.inactive {
+    color: #455662; }
+    .inline-editing-btn.inactive:hover {
+      cursor: auto; }
+
 @font-face {
   font-family: "inline";
   src: url("font/inline.eot");
   src: url("font/inline.eot?#iefix") format("embedded-opentype"), url("font/inline.woff") format("woff"), url("font/inline.ttf") format("truetype"), url("font/inline.svg#inline") format("svg");
   font-weight: normal;
-  font-style: normal;
-}
+  font-style: normal; }
+
 [data-icon]:before {
   font-family: "inline" !important;
   content: attr(data-icon);
@@ -110,8 +92,8 @@
   speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  -moz-osx-font-smoothing: grayscale; }
+
 [class^="inline-icon-"]:before,
 [class*=" inline-icon-"]:before {
   font-family: "inline" !important;
@@ -122,26 +104,25 @@
   speak: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  -moz-osx-font-smoothing: grayscale; }
+
 .inline-icon-xcore:before {
-  content: "\61";
-}
+  content: "\61"; }
+
 .inline-icon-trash:before {
-  content: "\62";
-}
+  content: "\62"; }
+
 .inline-icon-save:before {
-  content: "\63";
-}
+  content: "\63"; }
+
 .inline-icon-ok:before {
   content: "\64";
-  color: #00b66d;
-}
+  color: #00b66d; }
+
 .inline-icon-error:before {
   content: "\65";
-  color: #d8202b;
-}
+  color: #d8202b; }
+
 .inline-icon-progress:before {
   content: url("font/loader.gif");
-  color: grey;
-}
+  color: grey; }

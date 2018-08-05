@@ -1,10 +1,10 @@
 {
-  "files": [
-    "inline.ts"
-  ],
   "compilerOptions": {
     "noImplicitAny": true,
     "target": "es5",
     "removeComments": true
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

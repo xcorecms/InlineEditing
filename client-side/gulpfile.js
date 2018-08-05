@@ -1,18 +1,26 @@
 var gulp = require('gulp');
-var less = require('gulp-less');
-var ts = require('gulp-typescript');
-var tsProject = ts.createProject('src/ts/tsconfig.json');
+var browserify = require('browserify');
+var tsify = require('tsify');
+var source = require('vinyl-source-stream')
+var sass = require('gulp-sass');
 
 gulp.task('ts', function () {
-    return tsProject.src()
-        .pipe(tsProject())
-        .js.pipe(gulp.dest('dist'));
+    var bundleStream = browserify('src/ts/inline.ts')
+        .plugin(tsify)
+        .bundle()
+        .on('error', function (error) {
+            console.error(error.toString());
+        })
+
+    return bundleStream
+        .pipe(source('inline.js'))
+        .pipe(gulp.dest('dist'))
 });
 
-gulp.task('less', function () {
-    return gulp.src('src/less/inline.less')
-        .pipe(less())
+gulp.task('sass', function () {
+    return gulp.src('src/sass/inline.scss')
+        .pipe(sass())
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['ts', 'less']);
+gulp.task('default', ['ts', 'sass']);
