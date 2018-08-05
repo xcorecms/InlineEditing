@@ -21,7 +21,7 @@ class ElementEntityContainer
     private $valid;
 
     /**
-     * @param $entity
+     * @param mixed $entity
      */
     public function __construct($entity)
     {

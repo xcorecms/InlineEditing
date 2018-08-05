@@ -1,4 +1,3 @@
 parameters:
     ignoreErrors:
-        - '#Cannot call method fetchPairs\(\) on Dibi\\Result|int#'
         - '#Access to an undefined property Psr\\Cache\\CacheItemInterface::\$isHit#'
