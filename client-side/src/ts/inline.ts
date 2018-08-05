@@ -14,6 +14,9 @@ class Inline {
     // list of actual changes - id is unique html id
     public changes: { [id: string]: BaseItem } = {}
 
+    // content backups
+    public backups: { [id: string]: string } = {}
+
     public btns: { [id: string]: HTMLButtonElement } = {}
 
     public editableConfigs: any = {
@@ -123,8 +126,10 @@ class Inline {
 
         this.editables = document.querySelectorAll('*[data-inline-type]')
 
+        let counter = 0;
         this.editablesForeach((el) => {
             let type = el.getAttribute('data-inline-type')
+            el.id = 'xcore_' + counter++
             el.classList.add((type === 'simple' || type === 'entity') ? 'inline-editing-tinymce' : 'inline-editing-specific')
         })
 
@@ -252,7 +257,7 @@ class Inline {
     public revertAll() {
         this.clearErrors()
 
-        this.editablesForeach((el) => el.innerHTML = el.getAttribute('data-inline-backup'))
+        this.editablesForeach((el) => el.innerHTML = this.backups[el.id])
         this.btns['save'].classList.add('inactive')
         this.btns['status'].classList.add('inline-hidden')
         this.btns['revert'].classList.add('inactive')
@@ -269,16 +274,16 @@ class Inline {
         this.editablesForeach((el: HTMLElement) => {
             el.classList.add('inline-editing')
             if (el.innerText.trim() === '') {
-                console.log('apply')
                 // fix empty inline
                 el.classList.add('inline-empty')
             }
+            this.tryModifyLinkBehavior(el, false)
         })
 
         for (let optionsName in this.editableConfigs) {
 
             let settings = (<any>Object).assign({
-                entities : '160,nbsp',
+                entities: '160,nbsp',
                 inline: true,
                 menubar: false,
                 language: 'cs',
@@ -302,7 +307,10 @@ class Inline {
         this.btns['revert'].classList.add('inline-hidden')
         this.btns['enable'].classList.remove('inline-hidden')
 
-        this.editablesForeach((el) => el.classList.remove('inline-editing'))
+        this.editablesForeach((el) => {
+            el.classList.remove('inline-editing')
+            this.tryModifyLinkBehavior(el, true)
+        })
 
         tinymce.remove()
         this.removeSpecificEditable()
@@ -310,13 +318,21 @@ class Inline {
 
     // backup all content to data properties
     public backup() {
-        this.editablesForeach((el) => el.setAttribute('data-inline-backup', el.innerHTML))
+        this.editablesForeach((el) => this.backups[el.id] = el.innerHTML)
     }
 
     // helper for iterate over editables
     private editablesForeach(callback: (el: Element) => void) {
         for (let i = 0; i < this.editables.length; i++) {
             callback(this.editables[i])
+        }
+    }
+
+    // helper for enable/disable links
+    private tryModifyLinkBehavior(el: Element, response: boolean) {
+        let link = el.closest('a')
+        if (link) {
+            link.onclick = () => response
         }
     }
 

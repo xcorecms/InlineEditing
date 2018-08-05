@@ -6,6 +6,7 @@ var Inline = (function () {
     function Inline() {
         var _this = this;
         this.changes = {};
+        this.backups = {};
         this.btns = {};
         this.editableConfigs = {
             'headings': {
@@ -110,8 +111,10 @@ var Inline = (function () {
     };
     Inline.prototype.preInitTinymce = function () {
         this.editables = document.querySelectorAll('*[data-inline-type]');
+        var counter = 0;
         this.editablesForeach(function (el) {
             var type = el.getAttribute('data-inline-type');
+            el.id = 'xcore_' + counter++;
             el.classList.add((type === 'simple' || type === 'entity') ? 'inline-editing-tinymce' : 'inline-editing-specific');
         });
         this.backup();
@@ -211,8 +214,9 @@ var Inline = (function () {
         }
     };
     Inline.prototype.revertAll = function () {
+        var _this = this;
         this.clearErrors();
-        this.editablesForeach(function (el) { return el.innerHTML = el.getAttribute('data-inline-backup'); });
+        this.editablesForeach(function (el) { return el.innerHTML = _this.backups[el.id]; });
         this.btns['save'].classList.add('inactive');
         this.btns['status'].classList.add('inline-hidden');
         this.btns['revert'].classList.add('inactive');
@@ -227,9 +231,9 @@ var Inline = (function () {
         this.editablesForeach(function (el) {
             el.classList.add('inline-editing');
             if (el.innerText.trim() === '') {
-                console.log('apply');
                 el.classList.add('inline-empty');
             }
+            _this.tryModifyLinkBehavior(el, false);
         });
         for (var optionsName in this.editableConfigs) {
             var settings = Object.assign({
@@ -247,21 +251,32 @@ var Inline = (function () {
         this.applySpecificEditable();
     };
     Inline.prototype.disable = function () {
+        var _this = this;
         this.btns['disable'].classList.add('inline-hidden');
         this.btns['status'].classList.add('inline-hidden');
         this.btns['save'].classList.add('inline-hidden');
         this.btns['revert'].classList.add('inline-hidden');
         this.btns['enable'].classList.remove('inline-hidden');
-        this.editablesForeach(function (el) { return el.classList.remove('inline-editing'); });
+        this.editablesForeach(function (el) {
+            el.classList.remove('inline-editing');
+            _this.tryModifyLinkBehavior(el, true);
+        });
         tinymce.remove();
         this.removeSpecificEditable();
     };
     Inline.prototype.backup = function () {
-        this.editablesForeach(function (el) { return el.setAttribute('data-inline-backup', el.innerHTML); });
+        var _this = this;
+        this.editablesForeach(function (el) { return _this.backups[el.id] = el.innerHTML; });
     };
     Inline.prototype.editablesForeach = function (callback) {
         for (var i = 0; i < this.editables.length; i++) {
             callback(this.editables[i]);
+        }
+    };
+    Inline.prototype.tryModifyLinkBehavior = function (el, response) {
+        var link = el.closest('a');
+        if (link) {
+            link.onclick = function () { return response; };
         }
     };
     Inline.prototype.applySpecificEditable = function () {
