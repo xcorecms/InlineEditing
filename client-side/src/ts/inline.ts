@@ -129,8 +129,10 @@ class Inline {
         let counter = 0;
         this.editablesForeach((el) => {
             let type = el.getAttribute('data-inline-type')
-            el.id = 'xcore_' + counter++
             el.classList.add((type === 'simple' || type === 'entity') ? 'inline-editing-tinymce' : 'inline-editing-specific')
+            if (!el.id) {
+                el.id = 'xcore_' + counter++
+            }
         })
 
         this.backup()
