@@ -1,11 +1,11 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace XcoreCMS\InlineEditing\Tests\Mock\Entity;
 
 use XcoreCMS\InlineEditing\Exception\InvalidDataException;
 use XcoreCMS\InlineEditing\Model\Entity\Mapper\InlineMapperInterface;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**

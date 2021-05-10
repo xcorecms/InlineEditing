@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace XcoreCMS\InlineEditing\Model\Entity;
@@ -35,7 +36,7 @@ class EntityPersister
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->entityElementContainers = [];
-        $this->propertyAccessor = new PropertyAccessor;
+        $this->propertyAccessor = new PropertyAccessor();
     }
 
     /**
