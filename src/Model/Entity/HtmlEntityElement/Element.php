@@ -8,7 +8,10 @@ namespace XcoreCMS\InlineEditing\Model\Entity\HtmlEntityElement;
  */
 class Element
 {
-    /** @var string */
+    /**
+     * @var string
+     * @phpstan-var class-string
+     */
     private $className;
 
     /** @var int|string */
@@ -31,6 +34,7 @@ class Element
 
     /**
      * @param string $className
+     * @phpstan-param class-string $className
      * @param int|string $id
      * @param string $property
      * @param mixed $value
@@ -48,6 +52,7 @@ class Element
 
     /**
      * @return string
+     * @phpstan-return class-string
      */
     public function getClassName(): string
     {
@@ -98,7 +103,7 @@ class Element
      * @param int $status
      * @param string $message
      */
-    public function setError(int $status, string $message = '')
+    public function setError(int $status, string $message = ''): void
     {
         $this->status = $status;
         $this->message = $message;
@@ -129,7 +134,7 @@ class Element
     }
 
     /**
-     * @return array
+     * @return array<string, string|int>
      */
     public function generateResponse(): array
     {

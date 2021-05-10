@@ -17,7 +17,7 @@ interface PersistenceLayerInterface
     /**
      * @param string $namespace
      * @param string $locale
-     * @return array - output format ["name" => "value", ...]
+     * @return array<string, string> - output format ["name" => "value", ...]
      */
     public function getNamespaceContent(string $namespace, string $locale): array;
 

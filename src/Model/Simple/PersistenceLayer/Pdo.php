@@ -19,10 +19,6 @@ class Pdo extends AbstractPersistenceLayer
     /** @var XPDO */
     private $pdo;
 
-    /**
-     * @param string $tableName
-     * @param XPDO $pdo
-     */
     public function __construct(string $tableName, XPDO $pdo)
     {
         parent::__construct($tableName);
@@ -30,9 +26,7 @@ class Pdo extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return array
+     * {@inheritDoc}
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
@@ -45,9 +39,7 @@ class Pdo extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return bool
+     * {@inheritDoc}
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
@@ -59,9 +51,6 @@ class Pdo extends AbstractPersistenceLayer
         return $stmt->execute();
     }
 
-    /**
-     * @return string
-     */
     protected function getDriverName(): string
     {
         return $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);

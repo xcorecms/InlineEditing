@@ -30,10 +30,6 @@ class EntityPersister
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    /**
-     * @param EntityManager $entityManager
-     * @param ValidatorInterface $validator
-     */
     public function __construct(EntityManager $entityManager, ValidatorInterface $validator = null)
     {
         $this->entityManager = $entityManager;
@@ -46,7 +42,7 @@ class EntityPersister
      * @param Element $element
      * @param callable|null $onBeforeValidation
      */
-    public function update(Element $element, callable $onBeforeValidation = null)
+    public function update(Element $element, callable $onBeforeValidation = null): void
     {
         $key = $element->getEntityHash();
         $container = $this->entityElementContainers[$key] ?? null;
@@ -93,9 +89,6 @@ class EntityPersister
         }
     }
 
-    /**
-     * @return ElementEntityBaseContainer
-     */
     public function flush(): ElementEntityBaseContainer
     {
         foreach ($this->entityElementContainers as $container) {
@@ -118,7 +111,7 @@ class EntityPersister
                         var_export($violation->getInvalidValue(), true)
                     ));
 
-                    $container->setInvalid($violation->getMessage());
+                    $container->setInvalid((string) $violation->getMessage());
                     $this->entityManager->detach($entity);
                     continue;
                 }

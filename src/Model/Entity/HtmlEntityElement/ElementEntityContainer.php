@@ -66,7 +66,7 @@ class ElementEntityContainer
     /**
      * @param string $message
      */
-    public function setInvalid(string $message = null)
+    public function setInvalid(string $message = null): void
     {
         if ($message) {
             $this->message = $message;
@@ -99,7 +99,7 @@ class ElementEntityContainer
     }
 
     /**
-     * @return array
+     * @return array<string, array<string, string|int>>
      */
     public function generateResponse(): array
     {

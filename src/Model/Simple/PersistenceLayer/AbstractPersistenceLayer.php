@@ -37,14 +37,14 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
 
     /**
      * @param string $sql
-     * @param array $args
-     * @return array
+     * @param string[] $args
+     * @return array<string, string>
      */
     abstract protected function getKeyPairResult(string $sql, array $args): array;
 
     /**
      * @param string $sql
-     * @param array $args
+     * @param string[] $args
      * @return bool
      */
     abstract protected function updateOrInsertRecord(string $sql, array $args): bool;
@@ -55,9 +55,7 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
     abstract protected function getDriverName(): string;
 
     /**
-     * @param string $namespace
-     * @param string $locale
-     * @return array
+     * {@inheritDoc}
      */
     public function getNamespaceContent(string $namespace, string $locale): array
     {
@@ -66,12 +64,7 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
     }
 
     /**
-     * @param string $namespace
-     * @param string $name
-     * @param string $locale
-     * @param string $content
-     * @return bool
-     * @throws LogicException
+     * {@inheritDoc}
      */
     public function saveContent(string $namespace, string $name, string $locale, string $content): bool
     {

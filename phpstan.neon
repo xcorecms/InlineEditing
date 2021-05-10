@@ -1,3 +1,7 @@
 parameters:
+    level: max
+    paths:
+        - src
+        - tests
     ignoreErrors:
         - '#Access to an undefined property Psr\\Cache\\CacheItemInterface::\$isHit#'

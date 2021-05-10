@@ -52,7 +52,7 @@ class ArticleCustom implements InlineMapperInterface
     /**
      * @param string $title
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -68,7 +68,7 @@ class ArticleCustom implements InlineMapperInterface
     /**
      * @param string $content
      */
-    public function setContent(string $content)
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }

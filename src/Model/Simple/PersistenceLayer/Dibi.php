@@ -21,10 +21,6 @@ class Dibi extends AbstractPersistenceLayer
      */
     private $connection;
 
-    /**
-     * @param string $tableName
-     * @param Connection $connection
-     */
     public function __construct(string $tableName, Connection $connection)
     {
         parent::__construct($tableName);
@@ -32,9 +28,7 @@ class Dibi extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return array
+     * {@inheritDoc}
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
@@ -42,9 +36,7 @@ class Dibi extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return bool
+     * {@inheritDoc}
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
@@ -52,9 +44,6 @@ class Dibi extends AbstractPersistenceLayer
         return true;
     }
 
-    /**
-     * @return string
-     */
     protected function getDriverName(): string
     {
         $driverName = $this->connection->getConfig('driver', '');

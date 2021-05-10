@@ -21,11 +21,6 @@ class Dbal extends AbstractPersistenceLayer
      */
     private $connection;
 
-    /**
-     * Doctrine constructor.
-     * @param string $tableName
-     * @param Connection $connection
-     */
     public function __construct(string $tableName, Connection $connection)
     {
         parent::__construct($tableName);
@@ -33,38 +28,25 @@ class Dbal extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return array
+     * {@inheritDoc}
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue('1', $args[0]);
-        $stmt->bindValue('2', $args[1]);
-        $stmt->execute();
+        $stmt->execute($args);
 
         return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return bool
+     * {@inheritDoc}
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
         $stmt = $this->connection->prepare($sql);
-        $stmt->bindValue('1', $args[0]);
-        $stmt->bindValue('2', $args[1]);
-        $stmt->bindValue('3', $args[2]);
-        $stmt->bindValue('4', $args[3]);
-        return $stmt->execute();
+        return $stmt->execute($args);
     }
 
-    /**
-     * @return string
-     */
     protected function getDriverName(): string
     {
         return $this->connection->getDriver()->getName();

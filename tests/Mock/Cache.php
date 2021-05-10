@@ -27,7 +27,7 @@ class Cache implements CacheItemPoolInterface
 
     /**
      * @param string[] $keys
-     * @return array|\Traversable
+     * @return array<string, CacheItemInterface>
      */
     public function getItems(array $keys = [])
     {
@@ -119,7 +119,7 @@ class Cache implements CacheItemPoolInterface
 
     /**
      * For debug
-     * @param array $data
+     * @param array<string, string> $data
      */
     public function setData(array $data): void
     {

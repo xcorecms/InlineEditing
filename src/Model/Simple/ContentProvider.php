@@ -24,7 +24,7 @@ use Psr\Cache\CacheItemPoolInterface;
 class ContentProvider
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $config;
 
@@ -47,12 +47,12 @@ class ContentProvider
      *      - name: content
      *      ...
      *
-     * @var array
+     * @var array<string, array<string, string>>
      */
     protected $loadedData;
 
     /**
-     * @param array $config
+     * @param array<string, mixed> $config
      * @param CacheItemPoolInterface $cache
      * @param PersistenceLayerInterface $persistenceLayer
      */
@@ -121,7 +121,7 @@ class ContentProvider
     /**
      * @param string $namespace
      * @param string $locale
-     * @return array
+     * @return array<string, string>
      */
     public function loadNspaceFromCache(string $namespace, string $locale): array
     {

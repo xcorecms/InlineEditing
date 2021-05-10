@@ -11,14 +11,12 @@ use XcoreCMS\InlineEditing\Model\Simple\PersistenceLayerInterface;
 final class PersistenceLayer implements PersistenceLayerInterface
 {
     /**
-     * @var array
+     * @var array<string, array<string, string>>
      */
     public $data = [];
 
     /**
-     * @param string $namespace
-     * @param string $locale
-     * @return array - output format ["name" => "value", ...]
+     * {@inheritDoc}
      */
     public function getNamespaceContent(string $namespace, string $locale): array
     {
@@ -26,11 +24,7 @@ final class PersistenceLayer implements PersistenceLayerInterface
     }
 
     /**
-     * @param string $namespace
-     * @param string $name
-     * @param string $locale
-     * @param string $content
-     * @return bool - TRUE on success or FALSE on failure
+     * {@inheritDoc}
      */
     public function saveContent(string $namespace, string $name, string $locale, string $content): bool
     {
@@ -40,7 +34,7 @@ final class PersistenceLayer implements PersistenceLayerInterface
 
     /**
      * For debug
-     * @param array $data
+     * @param array<string, array<string, string>> $data
      */
     public function setData(array $data): void
     {

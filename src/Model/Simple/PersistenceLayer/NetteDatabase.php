@@ -21,10 +21,6 @@ class NetteDatabase extends AbstractPersistenceLayer
      */
     private $connection;
 
-    /**
-     * @param string $tableName
-     * @param Connection $connection
-     */
     public function __construct(string $tableName, Connection $connection)
     {
         parent::__construct($tableName);
@@ -32,9 +28,7 @@ class NetteDatabase extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return array
+     * {@inheritDoc}
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
@@ -42,18 +36,13 @@ class NetteDatabase extends AbstractPersistenceLayer
     }
 
     /**
-     * @param string $sql
-     * @param array $args
-     * @return bool
+     * {@inheritDoc}
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
         return (bool) $this->connection->query($sql, $args[0], $args[1], $args[2], $args[3]);
     }
 
-    /**
-     * @return string
-     */
     protected function getDriverName(): string
     {
         return $this->connection->getDsn();

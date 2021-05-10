@@ -7,6 +7,7 @@ use ArrayAccess;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
+ * @implements ArrayAccess<string, ElementEntityContainer>
  */
 class ElementEntityBaseContainer implements ArrayAccess
 {
@@ -36,7 +37,7 @@ class ElementEntityBaseContainer implements ArrayAccess
     }
 
     /**
-     * @return array
+     * @return array<mixed>
      */
     public function generateResponse(): array
     {
