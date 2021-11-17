@@ -30,7 +30,7 @@ class Element
     /** @var string */
     private $message;
 
-    /** @var string */
+    /** @var string|null */
     private $entityHash;
 
     /**

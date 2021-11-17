@@ -34,9 +34,15 @@ class Dbal extends AbstractPersistenceLayer
     protected function getKeyPairResult(string $sql, array $args): array
     {
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($args);
+        // name, content
+        /** @var array<array<string, string>> $items */
+        $items = $stmt->executeQuery($args)->fetchAllAssociative();
 
-        return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $result = [];
+        foreach ($items as $item) {
+            $result[$item['name']] = $item['content'];
+        }
+        return $result;
     }
 
     /**
@@ -45,11 +51,12 @@ class Dbal extends AbstractPersistenceLayer
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
         $stmt = $this->connection->prepare($sql);
-        return $stmt->execute($args);
+        $stmt->executeStatement($args);
+        return true;
     }
 
     protected function getDriverName(): string
     {
-        return $this->connection->getDriver()->getName();
+        return $this->connection->getDriver()->getDatabasePlatform()->getName();
     }
 }
