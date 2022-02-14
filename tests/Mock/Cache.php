@@ -15,13 +15,9 @@ class Cache implements CacheItemPoolInterface
     /**
      * @var CacheItemInterface[]|CacheItem[]
      */
-    public $data = [];
+    public array $data = [];
 
-    /**
-     * @param string $key
-     * @return CacheItemInterface
-     */
-    public function getItem($key): CacheItemInterface
+    public function getItem(string $key): CacheItemInterface
     {
         return $this->data[$key] = $this->data[$key] ?? new CacheItem($key, null, false);
     }
@@ -30,7 +26,7 @@ class Cache implements CacheItemPoolInterface
      * @param string[] $keys
      * @return array<string, CacheItemInterface>
      */
-    public function getItems(array $keys = [])
+    public function getItems(array $keys = []): iterable
     {
         $items = [];
         foreach ($keys as $key) {
@@ -40,29 +36,18 @@ class Cache implements CacheItemPoolInterface
         return $items;
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function hasItem($key): bool
+    public function hasItem(string $key): bool
     {
         return $this->getItem($key)->isHit();
     }
 
-    /**
-     * @return bool
-     */
     public function clear(): bool
     {
         $this->data = [];
         return true;
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function deleteItem($key): bool
+    public function deleteItem(string $key): bool
     {
         unset($this->data[$key]);
         return true;
@@ -70,7 +55,6 @@ class Cache implements CacheItemPoolInterface
 
     /**
      * @param string[] $keys
-     * @return bool
      */
     public function deleteItems(array $keys): bool
     {
@@ -80,10 +64,6 @@ class Cache implements CacheItemPoolInterface
         return true;
     }
 
-    /**
-     * @param CacheItemInterface|CacheItem $item
-     * @return bool
-     */
     public function save(CacheItemInterface $item): bool
     {
         $item->isHit = true;
@@ -91,24 +71,12 @@ class Cache implements CacheItemPoolInterface
         return true;
     }
 
-    /**
-     * Sets a cache item to be persisted later.
-     *
-     * @param CacheItemInterface $item
-     *   The cache item to save.
-     *
-     * @return bool
-     *   False if the item could not be queued or if a commit was attempted and failed. True otherwise.
-     */
     public function saveDeferred(CacheItemInterface $item): bool
     {
         $this->save($item);
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function commit(): bool
     {
         foreach ($this->data as $item) {

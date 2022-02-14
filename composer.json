@@ -19,14 +19,14 @@
   ],
   "require": {
     "php": "^7.4 || ^8.0",
-    "psr/cache": "^1.0"
+    "psr/cache": "^1.0 || ^2.0 || ^3.0"
   },
   "require-dev": {
     "doctrine/orm": "^2.5",
     "nette/database": "^3.0",
     "dibi/dibi": "^4.0",
-    "symfony/property-access": "^5.0",
-    "symfony/validator": "^5.0",
+    "symfony/property-access": "^6.0",
+    "symfony/validator": "^6.0",
     "squizlabs/php_codesniffer": "^3.0",
     "tracy/tracy": "^2.4",
     "nette/tester": "^2.0",

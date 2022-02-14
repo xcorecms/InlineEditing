@@ -10,7 +10,7 @@ Inline Editing = Content editable...
 Requirements
 ------------
 
-XcoreCMS/InlineEditing requires PHP 7.1 or higher
+XcoreCMS/InlineEditing requires PHP 7.4 or higher
 
 
 Installation
