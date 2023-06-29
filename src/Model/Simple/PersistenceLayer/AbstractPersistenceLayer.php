@@ -37,14 +37,14 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
     }
 
     /**
-     * @param string $sql
+     * @param literal-string $sql
      * @param string[] $args
      * @return array<string, string>
      */
     abstract protected function getKeyPairResult(string $sql, array $args): array;
 
     /**
-     * @param string $sql
+     * @param literal-string $sql
      * @param string[] $args
      * @return bool
      */
@@ -60,6 +60,7 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
      */
     public function getNamespaceContent(string $namespace, string $locale): array
     {
+        /** @var literal-string $sql */
         $sql = "SELECT name, content FROM $this->tableName WHERE namespace = ? AND locale = ?";
         return $this->getKeyPairResult($sql, [$namespace, $locale]);
     }
@@ -69,6 +70,7 @@ abstract class AbstractPersistenceLayer implements PersistenceLayerInterface
      */
     public function saveContent(string $namespace, string $name, string $locale, string $content): bool
     {
+        /** @var literal-string $sql */
         $sql = "INSERT INTO $this->tableName (namespace, name, locale, content) VALUES (?, ?, ?, ?) ";
 
         $driver = $this->detectDbDriver();

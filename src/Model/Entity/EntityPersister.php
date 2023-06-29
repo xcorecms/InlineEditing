@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace XcoreCMS\InlineEditing\Model\Entity;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -19,7 +19,7 @@ use XcoreCMS\InlineEditing\Model\Entity\Mapper\InlineMapperInterface;
  */
 class EntityPersister
 {
-    /** @var EntityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
 
     /** @var ValidatorInterface|null */
@@ -31,7 +31,7 @@ class EntityPersister
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(EntityManager $entityManager, ValidatorInterface $validator = null)
+    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator = null)
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
@@ -72,8 +72,8 @@ class EntityPersister
         // validate symfony
         if ($this->validator !== null) {
             $violations = $this->validator->validatePropertyValue($entity, $property, $value);
-            if (count($violations)) {
-                $element->setError(2, $violations[0]->getMessage());
+            if (isset($violations[0])) {
+                $element->setError(2, (string) $violations[0]->getMessage());
             }
         }
 
@@ -126,10 +126,10 @@ class EntityPersister
                     continue 2;
                 }
             }
-
-            // ok
-            $this->entityManager->flush($entity);
         }
+
+        // ok
+        $this->entityManager->flush();
 
         return new ElementEntityBaseContainer($this->entityElementContainers);
     }
