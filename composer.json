@@ -22,7 +22,7 @@
     "psr/cache": "^1.0 || ^2.0 || ^3.0"
   },
   "require-dev": {
-    "doctrine/orm": "^2.5",
+    "doctrine/orm": "^3.0",
     "nette/database": "^3.0",
     "dibi/dibi": "^4.0",
     "symfony/property-access": "^6.0",

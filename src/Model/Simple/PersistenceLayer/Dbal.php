@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace XcoreCMS\InlineEditing\Model\Simple\PersistenceLayer;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
@@ -33,10 +35,9 @@ class Dbal extends AbstractPersistenceLayer
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
-        $stmt = $this->connection->prepare($sql);
         // name, content
         /** @var array<array<string, string>> $items */
-        $items = $stmt->executeQuery($args)->fetchAllAssociative();
+        $items = $this->connection->executeQuery($sql, $args)->fetchAllAssociative();
 
         $result = [];
         foreach ($items as $item) {
@@ -50,13 +51,21 @@ class Dbal extends AbstractPersistenceLayer
      */
     protected function updateOrInsertRecord(string $sql, array $args): bool
     {
-        $stmt = $this->connection->prepare($sql);
-        $stmt->executeStatement($args);
+        $this->connection->executeStatement($sql, $args);
         return true;
     }
 
     protected function getDriverName(): string
     {
-        return $this->connection->getDriver()->getDatabasePlatform()->getName();
+        $platform = $this->connection->getDatabasePlatform();
+        if ($platform instanceof AbstractMySQLPlatform) {
+            return 'mysql';
+        }
+
+        if ($platform instanceof PostgreSQLPlatform) {
+            return 'pgsql';
+        }
+
+        return 'unknown';
     }
 }
