@@ -64,10 +64,7 @@ class ElementEntityContainer
         return $this->message;
     }
 
-    /**
-     * @param string $message
-     */
-    public function setInvalid(string $message = null): void
+    public function setInvalid(string $message): void
     {
         if ($message) {
             $this->message = $message;

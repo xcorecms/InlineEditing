@@ -72,7 +72,7 @@ class ElementEntityBaseContainer implements ArrayAccess
      */
     public function offsetSet($offset, $value): void
     {
-        $this->containers[$offset] = $value;
+        $this->containers[$offset ?? ''] = $value;
     }
 
     /**

@@ -31,7 +31,7 @@ class EntityPersister
     /** @var PropertyAccessor */
     private $propertyAccessor;
 
-    public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator = null)
+    public function __construct(EntityManagerInterface $entityManager, ?ValidatorInterface $validator = null)
     {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
@@ -43,7 +43,7 @@ class EntityPersister
      * @param Element $element
      * @param callable|null $onBeforeValidation
      */
-    public function update(Element $element, callable $onBeforeValidation = null): void
+    public function update(Element $element, ?callable $onBeforeValidation = null): void
     {
         $key = $element->getEntityHash();
         $container = $this->entityElementContainers[$key] ?? null;
@@ -121,7 +121,7 @@ class EntityPersister
             // revalidate
             foreach ($container->getElements() as $element) {
                 if ($element->isValid() === false) {
-                    $container->setInvalid();
+                    $container->setInvalid('');
                     $this->entityManager->detach($entity);
                     continue 2;
                 }

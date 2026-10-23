@@ -33,7 +33,7 @@ class NetteDatabase extends AbstractPersistenceLayer
      */
     protected function getKeyPairResult(string $sql, array $args): array
     {
-        return $this->connection->query($sql, $args[0], $args[1])->fetchPairs('name', 'content'); // @phpstan-ignore-line
+        return $this->connection->query($sql, $args[0], $args[1])->fetchPairs('name', 'content');
     }
 
     /**

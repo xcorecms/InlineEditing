@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Article
 {
-
     /**
      * @var int
      * @ORM\Column(type="integer")
